@@ -1,5 +1,6 @@
 import  React, { useState, useEffect }  from 'react';
 import axios from 'axios';
+import Header from './header.js'
 import { Link } from "react-router-dom";
 import '../App.css';
 
@@ -48,9 +49,12 @@ function Home() {
     data.map(article => {
       return(
         <div key={article._id} className="home-article-container">
-          <h3><Link to={"/article/" + article._id }>{ article.title }</Link></h3>
-          { (article.author || []).map(authorName => <p key={article._id}><Link to={"/author/" + article._id}>{ authorName.display }</Link></p>)}
-          <p>{ article.published__on }</p>
+          <h3><Link to={"/article/" + article._id } className="home-main-header">{ article.title }</Link></h3>
+          <img className="home-main-img" alt={ article.title } src={'http://ec2-13-53-135-13.eu-north-1.compute.amazonaws.com:8080/'+ article.image.path}></img>
+          { (article.author || []).map(authorName => 
+          <div className="home-main-author-container" key={article._id}>Av: <Link className="home-main-author" to={"/author/" + article._id}>{ authorName.display }</Link>
+          <span className="home-main-date">{ article.published__on }</span></div>)}
+          
         </div>
       )
     })
@@ -58,15 +62,12 @@ function Home() {
 
   return (
     <div>
-      <header>
-        header
-      </header>
+      <Header></Header>
       <main>
         { renderAllArticle }
       </main>
       <button onClick={ handleBack }>Back</button><button onClick={ handleNext }>Next</button>
       <footer>
-        footer
       </footer>
     </div>
   );

@@ -1,6 +1,7 @@
 import  React, { useState, useEffect }  from 'react';
 import axios from 'axios';
 import { Link } from "react-router-dom";
+import Header from './header.js'
 import '../App.css';
 
 function Author(props) {
@@ -22,7 +23,7 @@ function Author(props) {
   let renderAuthors = (
     data.map( author => {
       return ( 
-        <div className="author-container">
+        <div className="author-container" key={author._id}>
           <h3>{ author.name }</h3>
           <img className="author-image" alt={ author.name } src={'http://ec2-13-53-135-13.eu-north-1.compute.amazonaws.com:8080/'+ author.avatar.path }></img>
           <p>{ author.description }</p>
@@ -35,15 +36,12 @@ function Author(props) {
   
   return (
     <div>
-      <header>
-        header
-      </header>
+      <Header></Header>
       <main>
         { renderAuthors }
-        <button><Link to="/">Back</Link></button>
       </main>
+      <button><Link to="/" className="link-button">Back</Link></button>
       <footer>
-        footer
       </footer>
     </div>
   );

@@ -1,5 +1,6 @@
 import  React, { useState, useEffect }  from 'react';
 import axios from 'axios';
+import Header from './header.js'
 import { Link } from "react-router-dom";
 import '../App.css';
 const ReactMarkdown = require('react-markdown')
@@ -34,15 +35,12 @@ function Article(props) {
 
   return (
     <div>
-      <header>
-        header
-      </header>
+      <Header></Header>
       <main>
        { renderArticle }
-       <button><Link to="/">Back</Link></button>
       </main>
+      <button><Link to="/" className="link-button">Back</Link></button>
       <footer>
-        footer
       </footer>
     </div>
   );
