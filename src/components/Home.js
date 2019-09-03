@@ -6,13 +6,17 @@ import '../App.css';
 function Home() {
 
   const [data, updateData] = useState([]);
+  const [skip, updateSkip] = useState(0);
+  const [articlePosts, updateArticlePosts] = useState(0);
 
   useEffect(() => {
     const API_ROOT = 'http://ec2-13-53-135-13.eu-north-1.compute.amazonaws.com:8080/api/collections/get/article';
     const token = '?token=cd1b9f1b2f3244b102788d356b2a6a';
-    axios.get(API_ROOT + token)
+    const pagination = '&limit=4&skip=' + skip
+    axios.get(API_ROOT + token + pagination)
       .then((response) => {
         console.log(response.data.entries);
+        updateArticlePosts(response.data.total)
         updateData(response.data.entries);
       })
       /*
@@ -23,7 +27,22 @@ function Home() {
         if (error.response.status === 404) {
         } 
         */
-  },[]);
+  },[skip]);
+
+  let handleBack = () => {
+    if (skip > 0) {
+      updateSkip(skip-4)
+    }
+    else {
+      updateSkip(0)
+    }
+  }
+
+  let handleNext = () => {
+    if (skip < articlePosts-4) {
+    updateSkip(skip+4)
+    }
+  }
 
   let renderAllArticle = (
     data.map(article => {
@@ -45,6 +64,7 @@ function Home() {
       <main>
         { renderAllArticle }
       </main>
+      <button onClick={ handleBack }>Back</button><button onClick={ handleNext }>Next</button>
       <footer>
         footer
       </footer>
