@@ -30,7 +30,7 @@ function Home() {
       return(
         <div key={article._id} className="home-article-container">
           <h3><Link to={"/article/" + article._id }>{ article.title }</Link></h3>
-          { (article.author || []).map(authorName => <p><Link to={"/author/" + article._id}>{ authorName.display }</Link></p>)}
+          { (article.author || []).map(authorName => <p key={article._id}><Link to={"/author/" + article._id}>{ authorName.display }</Link></p>)}
           <p>{ article.published__on }</p>
         </div>
       )

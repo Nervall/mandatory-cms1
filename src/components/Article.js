@@ -7,24 +7,30 @@ const ReactMarkdown = require('react-markdown')
 function Article(props) {
   const id = props.match.params.id;
   const [data, updateData] = useState([]);
-  const [author, updateAuthor] = useState('')
 
   useEffect( () => {
     const API_ROOT = 'http://ec2-13-53-135-13.eu-north-1.compute.amazonaws.com:8080/api/collections/get/article';
     const token = '?token=cd1b9f1b2f3244b102788d356b2a6a';
     axios.get(API_ROOT + token)
     .then((response) => {
-      for (let article of response.data.entries) {
-        if (article._id === id) {
-          updateData(article)
-          for (let x of article.author) {
-            updateAuthor(x.display)
-          }
-        }
-      }
-    })
+        updateData(response.data.entries);
+    } )
   }, [id]
   );
+
+  let renderArticle = (
+    data.map( article => {
+      if (article._id === id) {
+        return(
+        <div key={ article._id } className="article_container">
+          <h3>{ article.title }</h3>
+          { (article.author || []).map(authorName => <div key={ article._id }>{ authorName.display }</div>)}
+          <p>{ article.published__on }</p>
+          <ReactMarkdown>{ article.body }</ReactMarkdown>
+       </div>
+        )}
+    })
+  )
 
   return (
     <div>
@@ -32,12 +38,7 @@ function Article(props) {
         header
       </header>
       <main>
-       <div className="article_container">
-        <h3>{ data.title }</h3>
-        <p>{ author }</p>
-        <p>{ data.published__on }</p>
-        <p><ReactMarkdown>{ data.body }</ReactMarkdown></p>
-       </div>
+       { renderArticle }
        <button><Link to="/">Back</Link></button>
       </main>
       <footer>
