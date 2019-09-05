@@ -41,11 +41,11 @@ function Author(props) {
   
   return (
     <div>
-      <Header></Header>
+      <Header />
       <main>
         { renderAuthors }
       </main>
-      <button><Link to="/" className="link-button">Back</Link></button>
+      <Link to="/" className="link-button"><button>Back</button></Link>
       <footer>
       </footer>
     </div>

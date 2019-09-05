@@ -27,7 +27,6 @@ function Home() {
       .then((response) => {
         updateArticlePosts(response.data.total)
         updateData(response.data.entries);
-        console.log(skip)
       })
       .catch((error) => {
         if (axios.isCancel(error)) {
@@ -39,25 +38,28 @@ function Home() {
       })
   },[skip, search, value]);
 
-  let handleBack = () => {
-    if (skip > 0) {
-      updateSkip(skip-4)
+  useEffect( () => {
+    if (skip === 0) {
+      updateDisableBack(true);
       updateDisableNext(false)
     }
-    else if (skip === 0) {
-      //updateSkip(0)
-      updateDisableBack(true)
+    else if (skip > articlePosts-4) {
+      updateDisableNext(true);
+      updateDisableBack(false)
     }
+    else {
+      updateDisableBack(false)
+      updateDisableNext(false)
+    }
+  },[skip, articlePosts]
+  );
+
+  let handleBack = () => {
+      updateSkip(skip-4)
   }
 
   let handleNext = () => {
-    if (skip < articlePosts-4) {
     updateSkip(skip+4)
-    updateDisableBack(false)
-    }
-    else if(skip > articlePosts-4) {
-      updateDisableNext(true)
-    }
   }
 
   let handleSearch = (e) => {
@@ -80,9 +82,10 @@ function Home() {
     })
   );
 
+
   return (
     <div>
-      <Header></Header>
+      <Header />
       <input type="text" name="search" placeholder="Sök titel..."  onChange={ handleSearch } />
       <main>
         { renderAllArticle }
