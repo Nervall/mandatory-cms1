@@ -81,8 +81,10 @@ function Home() {
       )
     })
   );
-
-
+  
+  if (data === null) {
+    return (<p>Loading...</p>)
+  }
   return (
     <div>
       <Header />
