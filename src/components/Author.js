@@ -5,8 +5,6 @@ import Header from './header.js'
 import '../App.css';
 
 function Author(props) {
-  const id = props.match.params.id;
-  console.log(id);
   const [data, updateData] = useState([]);
   
   useEffect( () => {
@@ -14,8 +12,15 @@ function Author(props) {
     const token = '?token=cd1b9f1b2f3244b102788d356b2a6a';
     axios.get(API_ROOT + token)
     .then((response) => {
-      console.log(response.data.entries);
       updateData(response.data.entries);
+    })
+    .catch((error) => {
+      if (axios.isCancel(error)) {
+        return;
+      }
+      if (error) {
+        console.log(error)
+      }
     })
   }, []
   );

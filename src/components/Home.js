@@ -9,40 +9,60 @@ function Home() {
   const [data, updateData] = useState([]);
   const [skip, updateSkip] = useState(0);
   const [articlePosts, updateArticlePosts] = useState(0);
+  const [disableBack, updateDisableBack] = useState(true);
+  const [disableNext, updateDisableNext] = useState(false);
+  const [search, updateSearch] = useState();
+  const [value, updateValue] = useState();
 
   useEffect(() => {
     const API_ROOT = 'http://ec2-13-53-135-13.eu-north-1.compute.amazonaws.com:8080/api/collections/get/article';
     const token = '?token=cd1b9f1b2f3244b102788d356b2a6a';
     const pagination = '&limit=4&skip=' + skip
-    axios.get(API_ROOT + token + pagination)
+    if (search) {
+      updateValue('&filter[title][$regex]=' + search)
+    } else {
+      updateValue('');
+    }
+    axios.get(API_ROOT + token + pagination + value)
       .then((response) => {
-        console.log(response.data.entries);
         updateArticlePosts(response.data.total)
         updateData(response.data.entries);
+        console.log(skip)
       })
-      /*
       .catch((error) => {
         if (axios.isCancel(error)) {
           return;
         }
-        if (error.response.status === 404) {
-        } 
-        */
-  },[skip]);
+        if (error) {
+          console.log(error)
+        }
+      })
+  },[skip, search, value]);
 
   let handleBack = () => {
     if (skip > 0) {
       updateSkip(skip-4)
+      updateDisableNext(false)
     }
-    else {
-      updateSkip(0)
+    else if (skip === 0) {
+      //updateSkip(0)
+      updateDisableBack(true)
     }
   }
 
   let handleNext = () => {
     if (skip < articlePosts-4) {
     updateSkip(skip+4)
+    updateDisableBack(false)
     }
+    else if(skip > articlePosts-4) {
+      updateDisableNext(true)
+    }
+  }
+
+  let handleSearch = (e) => {
+    let searchValue = e.target.value;
+    updateSearch(searchValue);
   }
 
   let renderAllArticle = (
@@ -63,10 +83,11 @@ function Home() {
   return (
     <div>
       <Header></Header>
+      <input type="text" name="search" placeholder="Sök titel..."  onChange={ handleSearch } />
       <main>
         { renderAllArticle }
       </main>
-      <button onClick={ handleBack }>Back</button><button onClick={ handleNext }>Next</button>
+      <button disabled={ disableBack } onClick={ handleBack }>Back</button><button disabled={ disableNext } onClick={ handleNext }>Next</button>
       <footer>
       </footer>
     </div>

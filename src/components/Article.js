@@ -15,7 +15,15 @@ function Article(props) {
     axios.get(API_ROOT + token)
     .then((response) => {
         updateData(response.data.entries);
-    } )
+    })
+    .catch((error) => {
+      if (axios.isCancel(error)) {
+        return;
+      }
+      if (error) {
+        console.log(error)
+      }
+    })
   }, [id]
   );
 
@@ -24,12 +32,13 @@ function Article(props) {
       if (article._id === id) {
         return(
         <div key={ article._id } className="article_container">
-          <h3>{ article.title }</h3>
+          <h3 className="home-main-header">{ article.title }</h3>
           { (article.author || []).map(authorName => <div key={ article._id }>{ authorName.display }</div>)}
           <p>{ article.published__on }</p>
           <ReactMarkdown>{ article.body }</ReactMarkdown>
        </div>
         )}
+        return null;
     })
   )
 
